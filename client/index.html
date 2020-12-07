@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <script type="text/javascript">
+        let socket = new WebSocket("ws:/127.0.0.1:{{ .Port }}/ws");
+        let history = [];
+
+        socket.onopen = function () {
+            alert("Соединение установлено.");
+        };
+
+        socket.onclose = function (event) {
+            if (event.wasClean) {
+                alert('Соединение закрыто');
+                return
+            }
+
+            socket = new WebSocket("ws:/127.0.0.1:{{ .Port }}/ws");
+        };
+
+        socket.onmessage = function (event) {
+            console.log(JSON.parse(event.data));
+            history = [].concat(history, JSON.parse(event.data));
+            console.log('Готово', history);
+            document.getElementById("panel").innerHTML = view();
+        };
+
+        function view() {
+            let res = "";
+
+            history.forEach(function (mes) {
+                console.log(mes);
+                res += "<p>" +
+                    "<i>" + new Date(mes.Time * 1000) + "</i></br>" +
+                    "Пользователь: <b>" + mes.UserID + "</b></br>" +
+                    mes.Message +
+                    "</p>";
+            });
+
+
+            return res;
+        }
+
+        socket.onerror = function (error) {
+            alert("Ошибка " + error.message);
+        };
+
+        function send() {
+            socket.send(document.getElementById("message").value);
+            document.getElementById("message").value = "";
+        }
+    </script>
+    <title>WebChat</title>
+</head>
+<body>
+<div id="panel">
+
+</div>
+<input type="text" id="message" onchange="send()"/>
+<button onclick="send()">Отправить</button>
+</body>
+</html>
