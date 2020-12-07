@@ -20,9 +20,7 @@
         };
 
         socket.onmessage = function (event) {
-            console.log(JSON.parse(event.data));
             history = [].concat(history, JSON.parse(event.data));
-            console.log('Готово', history);
             document.getElementById("panel").innerHTML = view();
         };
 
@@ -30,7 +28,6 @@
             let res = "";
 
             history.forEach(function (mes) {
-                console.log(mes);
                 res += "<p>" +
                     "<i>" + new Date(mes.Time * 1000) + "</i></br>" +
                     "Пользователь: <b>" + mes.UserID + "</b></br>" +
@@ -47,8 +44,9 @@
         };
 
         function send() {
-            socket.send(document.getElementById("message").value);
-            document.getElementById("message").value = "";
+            let div = document.getElementById("message");
+            socket.send(div.value);
+            div.value = "";
         }
     </script>
     <title>WebChat</title>

@@ -5,7 +5,7 @@ import (
 )
 
 // Сколько времени будет храниться история. Я бы вынес в конфиг
-const timeOut int64 = 10
+const timeOut int64 = 60 * 5
 
 func garbageСollector() {
 	history.Lock()
